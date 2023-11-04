@@ -10,11 +10,11 @@
 /// 2013, 2023
 
 // Student authors (fill in below):
-// NMec:  Name:
+// NMec:113093  Name:João Alfredo Pinto
+// NMec:114093  Name:Leonardo Afonso Oliveira Luís
 // 
 // 
-// 
-// Date:
+// Date: 02/11/2023
 //
 
 #include "image8bit.h"
@@ -171,7 +171,34 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
   assert (width >= 0);
   assert (height >= 0);
   assert (0 < maxval && maxval <= PixMax);
-  // Insert your code here!
+
+  // Allocate memory for the Image structure
+  Image img = (Image)malloc(sizeof(struct image));
+  if(!img){
+    errCause = "Memory allocation failed for Image structure";
+    errno = ENOMEM; //Set errno to ENOMEM to indicate memory allocation failure
+    return NULL;
+  }
+
+  // Allocate memory for the pixel array
+  img->pixel = (uint8*)calloc(width * height, sizeof(uint8)); // Using calloc to initialize memory to zero, so the image is black
+  if(!img->pixel){
+    errCause = "Memory allocation failed for pixel array";
+    errno = ENOMEM; //Set errno to ENOMEM to indicate memory allocation failure
+    free(img); // Clean up the Image structure allocation
+    return NULL;
+  }
+
+  // Initialize fields
+  img->width = width;
+  img->height = height;
+  img->maxval = maxval;
+
+  //Calculate the total number of pixels 
+  //int totalPixels = width*height;
+  //(Para já não irei usar esta variável, mas pode ser útil para a contagem de acessos à memória)
+
+  return img;
 }
 
 /// Destroy the image pointed to by (*imgp).
