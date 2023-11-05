@@ -355,7 +355,8 @@ int ImageValidRect(Image img, int x, int y, int w, int h) { ///
 // The returned index must satisfy (0 <= index < img->width*img->height)
 static inline int G(Image img, int x, int y) {
   int index;
-  // Insert your code here!
+  assert(img != NULL);
+  int index = y*img->width + x;
   assert (0 <= index && index < img->width*img->height);
   return index;
 }
@@ -365,7 +366,7 @@ uint8 ImageGetPixel(Image img, int x, int y) { ///
   assert (img != NULL);
   assert (ImageValidPos(img, x, y));
   PIXMEM += 1;  // count one pixel access (read)
-  return img->pixel[G(img, x, y)];
+  return img->pixel[G(img, x, y)]; //retuns the value of the pixel at positioj (x,y)
 } 
 
 /// Set the pixel at position (x,y) to new level.
@@ -373,7 +374,7 @@ void ImageSetPixel(Image img, int x, int y, uint8 level) { ///
   assert (img != NULL);
   assert (ImageValidPos(img, x, y));
   PIXMEM += 1;  // count one pixel access (store)
-  img->pixel[G(img, x, y)] = level;
+  img->pixel[G(img, x, y)] = level; //returs the value of the pixel at position (x,y)
 } 
 
 

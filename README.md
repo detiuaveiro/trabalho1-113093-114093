@@ -48,10 +48,10 @@ Sugere-se o desenvolvimento progressivo pela seguinte ordem:
    e depois `ImageSave` e `ImageDestroy`.
    Verificar que toda a memória foi libertada.
 3. Completar a função interna `G`,
-   que é usada por `ImageSetPixel` e `ImageGePixel`. -- a fazer, ainda
+   que é usada por `ImageSetPixel` e `ImageGetPixel`. -- done
 4. Completar `ImageStats`.
    Se usar `ImageGePixel`, permitirá testar `G`.
-   Testar com `./imageTool test/original.pgm info`.
+   Testar com `./imageTool test/original.pgm info`. -- a fazer ainda
 5. Completar `ImageNegative`, `ImageThreshold`, `ImageBrighten`.
 6. Completar `ImageValidRect`.
 7. Completar `ImageMirror`, `ImageRotate`.
