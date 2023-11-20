@@ -328,7 +328,19 @@ int ImageMaxval(Image img) { ///
 /// *max is set to the maximum.
 void ImageStats(Image img, uint8* min, uint8* max) { ///
   assert (img != NULL);
-  // Insert your code here!
+  assert(min!=NULL);
+  assert(max!=NULL);
+
+  //*min set to the maximum and *max set to the minimum gray levels in the image
+  *min = 255;
+  *max = 0;
+
+  
+
+
+
+
+
 }
 
 /// Check if pixel position (x,y) is inside img.
@@ -407,9 +419,10 @@ void ImageThreshold(Image img, uint8 thr) { ///
 /// This will brighten the image if factor>1.0 and
 /// darken the image if factor<1.0.
 void ImageBrighten(Image img, double factor) { ///
-  assert (img != NULL);
+  assert (img != NULL); 
   // ? assert (factor >= 0.0);
   // Insert your code here!
+  
 }
 
 

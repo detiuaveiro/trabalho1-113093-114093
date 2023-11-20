@@ -76,4 +76,5 @@ git fetch upstream
 git rebase upstream/main
 ```
 
-
+Notas:
+pixel = (int)(piel*factor+0.5)
