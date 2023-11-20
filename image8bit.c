@@ -335,12 +335,21 @@ void ImageStats(Image img, uint8* min, uint8* max) { ///
   *min = 255;
   *max = 0;
 
-  
-
-
-
-
-
+  //Iterate through all the pixels of the image
+  for(int y = 0; y < img->height; y++) {
+    for(int x = 0; x < img->width; x++) {
+      //Get the pixel at position (x,y)
+      uint8 pixel = ImageGetPixel(img, x, y);
+      //Check if the pixel is smaller than the current minimum
+      if(pixel < *min) {
+        *min = pixel;
+      }
+      //Check if the pixel is bigger than the current maximum
+      if(pixel > *max) {
+        *max = pixel;
+      }
+    }
+  }
 }
 
 /// Check if pixel position (x,y) is inside img.
@@ -366,7 +375,6 @@ int ImageValidRect(Image img, int x, int y, int w, int h) { ///
 // This internal function is used in ImageGetPixel / ImageSetPixel. 
 // The returned index must satisfy (0 <= index < img->width*img->height)
 static inline int G(Image img, int x, int y) {
-  int index;
   assert(img != NULL);
   int index = y*img->width + x;
   assert (0 <= index && index < img->width*img->height);

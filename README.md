@@ -77,4 +77,4 @@ git rebase upstream/main
 ```
 
 Notas:
-pixel = (int)(piel*factor+0.5)
+pixel = (int)(pixel*factor+0.5)
