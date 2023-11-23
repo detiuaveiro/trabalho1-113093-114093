@@ -411,7 +411,24 @@ void ImageSetPixel(Image img, int x, int y, uint8 level) { ///
 /// resulting in a "photographic negative" effect.
 void ImageNegative(Image img) { ///
   assert (img != NULL);
-  // Insert your code here!
+  
+  //The maximum gray level of the image, in this case 255
+  uint8 maxval = img->maxval;
+
+  //Iterate through all the pixels of the image
+  for(int y = 0; y < img->height; y++) {
+    for(int x = 0; x < img->width; x++) {
+
+      //Get the pixel at position (x,y)
+      uint8 pixelValue = ImageGetPixel(img, x, y);
+
+      //Calculate the negative of the pixel
+      uint8 negativeValue = maxval - pixelValue;
+
+      //Set the pixel at position (x,y) to the new level
+      ImageSetPixel(img, x, y, maxval - negativeValue);
+    }
+  }
 }
 
 /// Apply threshold to image.
@@ -419,7 +436,25 @@ void ImageNegative(Image img) { ///
 /// all pixels with level>=thr to white (maxval).
 void ImageThreshold(Image img, uint8 thr) { ///
   assert (img != NULL);
-  // Insert your code here!
+  
+  //The max value of the gray level of the image
+  uint8 maxval = img->maxval;
+
+  //Iterate through all the pixels of the image
+  for(int y = 0; y < img->height; ++y);{
+    for(int x = 0; x < img->width; ++x);{
+
+      //Get the pixel at position (x,y)
+      uint8 pixelValue = ImageGetPixel(img, x, y);
+
+      //If the pixel is smaller than the threshold, set it to black (0)
+      if(pixelValue < thr){
+        ImageSetPixel(img, x, y, 0);
+      } else {
+        ImageSetPixel(img, x, y, maxval); //If the pixel is bigger than the threshold, set it to white (maxval)
+      }
+    }
+  }
 }
 
 /// Brighten image by a factor.
@@ -429,8 +464,30 @@ void ImageThreshold(Image img, uint8 thr) { ///
 void ImageBrighten(Image img, double factor) { ///
   assert (img != NULL); 
   // ? assert (factor >= 0.0);
-  // Insert your code here!
   
+  //The max value of the gray level of the image
+  uint8 maxval = img->maxval;
+
+  //Iterate through all the pixels of the image
+  for(int y = 0; y < img->height; ++y){
+    for(int x = 0; x < img->width; x++){
+
+      //Get the pixel at position (x,y)
+      uint8 pixelValue = ImageGetPixel(img, x, y);
+
+      //Calculate the new pixel value
+      uint8 newPixelValue = pixelValue * factor;
+
+      //Apply saturation if the new pixel value is bigger than the max value
+      if(newPixelValue > maxval){
+        newPixelValue = maxval;
+      }
+
+      //Set the pixel at position (x,y) to the new level
+      ImageSetPixel(img, x, y, newPixelValue);
+
+    }
+  }
 }
 
 

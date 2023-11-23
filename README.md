@@ -52,7 +52,7 @@ Sugere-se o desenvolvimento progressivo pela seguinte ordem:
 4. Completar `ImageStats`.
    Se usar `ImageGePixel`, permitirá testar `G`.
    Testar com `./imageTool test/original.pgm info`. -- done
-5. Completar `ImageNegative`, `ImageThreshold`, `ImageBrighten`. 
+5. Completar `ImageNegative` (done), `ImageThreshold`(done), `ImageBrighten`(done). --done
 6. Completar `ImageValidRect`.
 7. Completar `ImageMirror`, `ImageRotate`.
 8. Completar `ImageCrop`, `ImagePaste` e `ImageBlend`.
