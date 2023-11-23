@@ -441,8 +441,8 @@ void ImageThreshold(Image img, uint8 thr) { ///
   uint8 maxval = img->maxval;
 
   //Iterate through all the pixels of the image
-  for(int y = 0; y < img->height; ++y);{
-    for(int x = 0; x < img->width; ++x);{
+  for(int y = 0; y < img->height; ++y){
+    for(int x = 0; x < img->width; ++x){
 
       //Get the pixel at position (x,y)
       uint8 pixelValue = ImageGetPixel(img, x, y);
@@ -485,7 +485,6 @@ void ImageBrighten(Image img, double factor) { ///
 
       //Set the pixel at position (x,y) to the new level
       ImageSetPixel(img, x, y, newPixelValue);
-
     }
   }
 }
