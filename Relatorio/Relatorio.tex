@@ -1,0 +1,116 @@
+\documentclass{report}
+\usepackage[T1]{fontenc} % Fontes T1
+\usepackage[utf8]{inputenc} % Input UTF8
+\usepackage[backend=biber, style=ieee]{biblatex} % para usar bibliografia
+\usepackage{csquotes}
+\usepackage[portuguese]{babel} %Usar língua portuguesa
+\usepackage{blindtext} % Gerar texto automaticamente
+\usepackage[printonlyused]{acronym}
+\usepackage{hyperref} % para autoref
+\usepackage{graphicx}
+\usepackage{indentfirst}
+
+\bibliography{bibliografia}
+
+
+\begin{document}
+%%
+% Definições
+%
+\def\titulo{Relatório AED}
+\def\data{25/11/2023}
+\def\autores{João Pinto, Leonardo Luís}
+\def\autorescontactos{(113093) joaop1@ua.pt, (114093) leonardo.luis@ua.pt}
+\def\departamento{Dept. de Eletrónica, Telecomunicações e Informática}
+\def\empresa{Universidade de Aveiro}
+\def\logotipo{ua.pdf}
+%
+%%%%%% CAPA %%%%%%
+%
+\begin{titlepage}
+
+\begin{center}
+%
+\vspace*{50mm}
+%
+{\Huge \titulo}\\ 
+%
+\vspace{10mm}
+%
+{\Large \empresa}\\
+%
+\vspace{10mm}
+%
+{\LARGE \autores}\\ 
+%
+\vspace{30mm}
+%
+\begin{figure}[h]
+\center
+\includegraphics{\logotipo}
+\end{figure}
+%
+\vspace{30mm}
+\end{center}
+%
+\begin{flushright}
+\end{flushright}
+\end{titlepage}
+
+%%  Página de Título %%
+\title{%
+{\Huge\textbf{\titulo}}\\
+{\Large \departamento\\ \empresa}
+}
+%
+\author{%
+    \autores \\
+    \autorescontactos
+}
+%
+\date{\today}
+%
+\maketitle
+
+\pagenumbering{roman}
+
+\tableofcontents
+% \listoftables     % descomentar se necessário
+% \listoffigures    % descomentar se necessário
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introdução}
+\label{chap.introducao}
+
+
+\chapter{Análise de Funções}
+\label{chap.analise}
+
+
+\section{ImageLocateSubImage()}
+
+\subsection{Dados experimentais}
+
+\subsection{Análise Formal}
+
+
+\section{ImageBlur()}
+
+\subsection{Dados experimentais}
+
+\subsection{Análise Formal}
+
+\subsection{Análise Comparativa Algoritmo Básico/Algoritmo Melhorado}
+
+
+
+\chapter{Conclusões}
+\label{chap.conclusao}
+Apresenta conclusões.
+
+\end{document}

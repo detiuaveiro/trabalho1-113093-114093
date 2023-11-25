@@ -731,7 +731,45 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
 /// Each pixel is substituted by the mean of the pixels in the rectangle
 /// [x-dx, x+dx]x[y-dy, y+dy].
 /// The image is changed in-place.
-void ImageBlur(Image img, int dx, int dy) { ///
+void ImageBlur(Image img, int dx, int dy) {
+    assert(img != NULL);
+    assert(dx >= 0 && dy >= 0);
 
+    // Cria uma cópia da imagem original para não alterar os pixels enquanto calcula a média
+    Image copy = ImageCopy(img);
+    if (copy == NULL) {
+        // Erro ao criar a cópia
+        return;
+    }
+
+    // O valor máximo de cinza
+    uint8 maxval = img->maxval;
+
+    // Percorre cada pixel da imagem
+    for (int y = 0; y < img->height; ++y) {
+        for (int x = 0; x < img->width; ++x) {
+            int count = 0;
+            int sum = 0;
+
+            // Percorre a vizinhança do pixel
+            for (int ny = -dy; ny <= dy; ++ny) {
+                for (int nx = -dx; nx <= dx; ++nx) {
+                    int currentX = x + nx;
+                    int currentY = y + ny;
+
+                    // Verifica se está dentro dos limites da imagem
+                    if (currentX >= 0 && currentX < img->width && currentY >= 0 && currentY < img->height) {
+                        sum += ImageGetPixel(copy, currentX, currentY);
+                        count++;
+                    }
+                }
+            }
+            // Calcula a média e define o novo valor do pixel
+            uint8 newPixelValue = (uint8)(sum / count);
+            ImageSetPixel(img, x, y, newPixelValue);
+        }
+    }
+    // Libera a cópia da imagem
+    ImageDestroy(&copy);
 }
 
