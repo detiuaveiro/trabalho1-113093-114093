@@ -362,6 +362,14 @@ int ImageValidPos(Image img, int x, int y) { ///
 int ImageValidRect(Image img, int x, int y, int w, int h) { ///
   assert (img != NULL);
   // Insert your code here!
+
+  //Check if the rectangle is inside the image
+  if((x >= 0 && x < img->width) && (y >= 0 && y < img->height) && (x+w <= img->width) && (y+h <= img->height)){
+    return 1;
+  } else {
+    return 0;
+  }
+
 }
 
 /// Pixel get & set operations
@@ -514,6 +522,26 @@ void ImageBrighten(Image img, double factor) { ///
 Image ImageRotate(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
+
+  //The width and height of the image
+  int width = img->width;
+  int height = img->height;
+
+  //Create a new image with the height and width inverted
+  Image newImage = ImageCreate(height, width, img->maxval);
+
+  //Iterate through all the pixels of the image
+  for(int y = 0; y < height; ++y){
+    for(int x = 0; x < width; ++x){
+
+      //Get the pixel at position (x,y)
+      uint8 pixelValue = ImageGetPixel(img, x, y);
+
+      //Set the pixel at position (y, width - x - 1) to the new level
+      ImageSetPixel(newImage, y, width - x - 1, pixelValue);
+    }
+  }
+  return newImage;
 }
 
 /// Mirror an image = flip left-right.
@@ -526,6 +554,26 @@ Image ImageRotate(Image img) { ///
 Image ImageMirror(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
+
+  //The width and height of the image
+  int width = img->width;
+  int height = img->height;
+
+  //Create a new image with the same width and height
+  Image newImage = ImageCreate(width, height, img->maxval);
+
+  //Iterate through all the pixels of the image
+  for(int y = 0; y < height; ++y){
+    for(int x = 0; x < width; ++x){
+
+      //Get the pixel at position (x,y)
+      uint8 pixelValue = ImageGetPixel(img, x, y);
+
+      //Set the pixel at position (width - x - 1, y) to the new level
+      ImageSetPixel(newImage, width - x - 1, y, pixelValue);
+    }
+  }
+  return newImage;
 }
 
 /// Crop a rectangular subimage from img.
@@ -544,6 +592,22 @@ Image ImageCrop(Image img, int x, int y, int w, int h) { ///
   assert (img != NULL);
   assert (ImageValidRect(img, x, y, w, h));
   // Insert your code here!
+
+  //Create a new image with the width and height of the rectangle
+  Image newImage = ImageCreate(w, h, img->maxval);
+
+  //Iterate through all the pixels of the image
+  for(int i = 0; i < h; ++i){
+    for(int j = 0; j < w; ++j){
+
+      //Get the pixel at position (x+j, y+i)
+      uint8 pixelValue = ImageGetPixel(img, x+j, y+i);
+
+      //Set the pixel at position (j, i) to the new level
+      ImageSetPixel(newImage, j, i, pixelValue);
+    }
+  }
+  return newImage;
 }
 
 
@@ -558,6 +622,18 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
+
+  //Iterate through all the pixels of the image
+  for(int i = 0; i < img2->height; ++i){
+    for(int j = 0; j < img2->width; ++j){
+
+      //Get the pixel at position (j, i)
+      uint8 pixelValue = ImageGetPixel(img2, j, i);
+
+      //Set the pixel at position (x+j, y+i) to the new level
+      ImageSetPixel(img1, x+j, y+i, pixelValue);
+    }
+  }
 }
 
 /// Blend an image into a larger image.
@@ -571,6 +647,24 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
+
+  //Iterate through all the pixels of the image
+  for(int i = 0; i < img2->height; ++i){
+    for(int j = 0; j < img2->width; ++j){
+
+      //Get the pixel at position (j, i)
+      uint8 pixelValue = ImageGetPixel(img2, j, i);
+
+      //Get the pixel at position (x+j, y+i)
+      uint8 pixelValue2 = ImageGetPixel(img1, x+j, y+i);
+
+      //Calculate the new pixel value
+      uint8 newPixelValue = pixelValue * alpha + pixelValue2 * (1 - alpha);
+
+      //Set the pixel at position (x+j, y+i) to the new level
+      ImageSetPixel(img1, x+j, y+i, newPixelValue);
+    }
+  }
 }
 
 /// Compare an image to a subimage of a larger image.
@@ -581,6 +675,24 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
   assert (img2 != NULL);
   assert (ImageValidPos(img1, x, y));
   // Insert your code here!
+
+  //Iterate through all the pixels of the image
+  for(int i = 0; i < img2->height; ++i){
+    for(int j = 0; j < img2->width; ++j){
+
+      //Get the pixel at position (j, i)
+      uint8 pixelValue = ImageGetPixel(img2, j, i);
+
+      //Get the pixel at position (x+j, y+i)
+      uint8 pixelValue2 = ImageGetPixel(img1, x+j, y+i);
+
+      //Check if the pixels are different
+      if(pixelValue != pixelValue2){
+        return 0;
+      }
+    }
+  }
+  return 1;
 }
 
 /// Locate a subimage inside another image.
@@ -591,6 +703,20 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
   assert (img1 != NULL);
   assert (img2 != NULL);
   // Insert your code here!
+
+  //Iterate through all the pixels of the image
+  for(int i = 0; i < img1->height; ++i){
+    for(int j = 0; j < img1->width; ++j){
+
+      //Check if the subimage matches the image at position (j, i)
+      if(ImageMatchSubImage(img1, j, i, img2)){
+        *px = j;
+        *py = i;
+        return 1;
+      }
+    }
+  }
+  return 0;
 }
 
 
@@ -601,6 +727,6 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
 /// [x-dx, x+dx]x[y-dy, y+dy].
 /// The image is changed in-place.
 void ImageBlur(Image img, int dx, int dy) { ///
-  // Insert your code here!
+
 }
 
