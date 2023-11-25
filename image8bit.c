@@ -661,6 +661,11 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
       //Calculate the new pixel value
       uint8 newPixelValue = pixelValue * alpha + pixelValue2 * (1 - alpha);
 
+      //Apply saturation if the new pixel value is bigger than the max value
+      if(newPixelValue > img1->maxval){
+        newPixelValue = img1->maxval;
+      }
+
       //Set the pixel at position (x+j, y+i) to the new level
       ImageSetPixel(img1, x+j, y+i, newPixelValue);
     }
