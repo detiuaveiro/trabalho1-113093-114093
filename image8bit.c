@@ -474,7 +474,7 @@ void ImageBrighten(Image img, double factor) {
   assert(factor >= 0.0);
 
   uint8 maxval = img->maxval;
-  
+
   //Iterate through all the pixels of the image
   for(int y = 0; y < img->height; ++y) {
     for(int x = 0; x < img->width; x++) {
@@ -640,6 +640,8 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) {
   assert(alpha >= 0.0 && alpha <= 1.0);
   assert(ImageValidRect(img1, x, y, img2->width, img2->height));
 
+  uint8 maxval = img1->maxval; // The max value of the gray level of the image
+
   //Iterate through all the pixels of the image
   for(int i = 0; i < img2->height; ++i) {
     for(int j = 0; j < img2->width; ++j) {
@@ -650,10 +652,15 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) {
       double newPixelValue = pixelValue1 * alpha + pixelValue2 * (1 - alpha);
 
       // Converts back to uint8, applying saturation
-      ImageSetPixel(img1, x + j, y + i, (uint8)newPixelValue);
+      newPixelValue = (newPixelValue > maxval) ? maxval : newPixelValue;
+      uint8 finalPixelValue = (uint8)(newPixelValue + 0.5); // +0.5 for rounding
+
+      //Set the pixel at position (x+j, y+i) to the new level
+      ImageSetPixel(img1, x + j, y + i, finalPixelValue);
     }
   }
 }
+
 
 /// Compare an image to a subimage of a larger image.
 /// Returns 1 (true) if img2 matches subimage of img1 at pos (x, y).
