@@ -474,15 +474,16 @@ void ImageBrighten(Image img, double factor) {
   assert(factor >= 0.0);
 
   uint8 maxval = img->maxval;
-
+  
+  //Iterate through all the pixels of the image
   for(int y = 0; y < img->height; ++y){
     for(int x = 0; x < img->width; x++){
       uint8 pixelValue = ImageGetPixel(img, x, y);
 
-      // Primeiro, faça a multiplicação em um tipo que possa manter a precisão
+      // fisrt, do the multiplication in a type that can hold the precision
       double temp = pixelValue * factor;
 
-      // Converta de volta para uint8, aplicando a saturação
+      // Cnverts back to uint8, applying saturation
       uint8 newPixelValue = (temp > maxval) ? maxval : (uint8)temp;
 
       ImageSetPixel(img, x, y, newPixelValue);
@@ -631,31 +632,23 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
 /// Requires: img2 must fit inside img1 at position (x, y).
 /// alpha usually is in [0.0, 1.0], but values outside that interval
 /// may provide interesting effects.  Over/underflows should saturate.
-void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
-  assert (img1 != NULL);
-  assert (img2 != NULL);
-  assert (ImageValidRect(img1, x, y, img2->width, img2->height));
+void ImageBlend(Image img1, int x, int y, Image img2, double alpha) {
+  assert(img1 != NULL);
+  assert(img2 != NULL);
+  assert(alpha >= 0.0 && alpha <= 1.0);
+  assert(ImageValidRect(img1, x, y, img2->width, img2->height));
 
   //Iterate through all the pixels of the image
-  for(int i = 0; i < img2->height; ++i){
-    for(int j = 0; j < img2->width; ++j){
+  for(int i = 0; i < img2->height; ++i) {
+    for(int j = 0; j < img2->width; ++j) {
+      uint8 pixelValue1 = ImageGetPixel(img2, j, i);
+      uint8 pixelValue2 = ImageGetPixel(img1, x + j, y + i);
 
-      //Get the pixel at position (j, i)
-      uint8 pixelValue = ImageGetPixel(img2, j, i);
+      // First, do the multiplication in a type that can hold the precision
+      double newPixelValue = pixelValue1 * alpha + pixelValue2 * (1 - alpha);
 
-      //Get the pixel at position (x+j, y+i)
-      uint8 pixelValue2 = ImageGetPixel(img1, x+j, y+i);
-
-      //Calculate the new pixel value
-      uint8 newPixelValue = pixelValue * alpha + pixelValue2 * (1 - alpha);
-
-      //Apply saturation if the new pixel value is bigger than the max value
-      if(newPixelValue > img1->maxval){
-        newPixelValue = img1->maxval;
-      }
-
-      //Set the pixel at position (x+j, y+i) to the new level
-      ImageSetPixel(img1, x+j, y+i, newPixelValue);
+      // Converts back to uint8, applying saturation
+      ImageSetPixel(img1, x + j, y + i, (uint8)newPixelValue);
     }
   }
 }
@@ -745,7 +738,7 @@ void ImageBlur(Image img, int dx, int dy) {
             }
 
             // Stores the mean in the temporary buffer
-            temp[y * img->width + x] = sum / count;
+            temp[y * img->width + x] = (uint8)((double)sum / count);
         }
     }
 
