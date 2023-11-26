@@ -469,33 +469,27 @@ void ImageThreshold(Image img, uint8 thr) { ///
 /// Multiply each pixel level by a factor, but saturate at maxval.
 /// This will brighten the image if factor>1.0 and
 /// darken the image if factor<1.0.
-void ImageBrighten(Image img, double factor) { ///
-  assert (img != NULL); 
-  // ? assert (factor >= 0.0);
-  
-  //The max value of the gray level of the image
+void ImageBrighten(Image img, double factor) {
+  assert(img != NULL);
+  assert(factor >= 0.0);
+
   uint8 maxval = img->maxval;
 
-  //Iterate through all the pixels of the image
   for(int y = 0; y < img->height; ++y){
     for(int x = 0; x < img->width; x++){
-
-      //Get the pixel at position (x,y)
       uint8 pixelValue = ImageGetPixel(img, x, y);
 
-      //Calculate the new pixel value
-      uint8 newPixelValue = pixelValue * factor;
+      // Primeiro, faça a multiplicação em um tipo que possa manter a precisão
+      double temp = pixelValue * factor;
 
-      //Apply saturation if the new pixel value is bigger than the max value
-      if(newPixelValue > maxval){
-        newPixelValue = maxval;
-      }
+      // Converta de volta para uint8, aplicando a saturação
+      uint8 newPixelValue = (temp > maxval) ? maxval : (uint8)temp;
 
-      //Set the pixel at position (x,y) to the new level
       ImageSetPixel(img, x, y, newPixelValue);
     }
   }
 }
+
 
 
 /// Geometric transformations
