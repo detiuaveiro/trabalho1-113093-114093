@@ -476,17 +476,19 @@ void ImageBrighten(Image img, double factor) {
   uint8 maxval = img->maxval;
   
   //Iterate through all the pixels of the image
-  for(int y = 0; y < img->height; ++y){
-    for(int x = 0; x < img->width; x++){
+  for(int y = 0; y < img->height; ++y) {
+    for(int x = 0; x < img->width; x++) {
       uint8 pixelValue = ImageGetPixel(img, x, y);
 
-      // fisrt, do the multiplication in a type that can hold the precision
-      double temp = pixelValue * factor;
+      // First, do the multiplication in a type that can hold the precision
+      double newPixelValue = pixelValue * factor;
 
-      // Cnverts back to uint8, applying saturation
-      uint8 newPixelValue = (temp > maxval) ? maxval : (uint8)temp;
+      // Converts back to uint8, applying saturation
+      // If the new pixel value is bigger than the maxval, it is set to maxval
+      newPixelValue = (newPixelValue > maxval) ? maxval : newPixelValue;
+      uint8 finalPixelValue = (uint8)(newPixelValue + 0.5); // +0.5 for rounding
 
-      ImageSetPixel(img, x, y, newPixelValue);
+      ImageSetPixel(img, x, y, finalPixelValue);
     }
   }
 }
