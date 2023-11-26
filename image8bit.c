@@ -433,8 +433,8 @@ void ImageNegative(Image img) { ///
       //Calculate the negative of the pixel
       uint8 negativeValue = maxval - pixelValue;
 
-      //Set the pixel at position (x,y) to the new level
-      ImageSetPixel(img, x, y, maxval - negativeValue);
+      // Set the pixel at position (x,y) to the new level
+      ImageSetPixel(img, x, y, negativeValue);
     }
   }
 }
@@ -521,7 +521,6 @@ void ImageBrighten(Image img, double factor) { ///
 /// On failure, returns NULL and errno/errCause are set accordingly.
 Image ImageRotate(Image img) { ///
   assert (img != NULL);
-  // Insert your code here!
 
   //The width and height of the image
   int width = img->width;
@@ -553,7 +552,6 @@ Image ImageRotate(Image img) { ///
 /// On failure, returns NULL and errno/errCause are set accordingly.
 Image ImageMirror(Image img) { ///
   assert (img != NULL);
-  // Insert your code here!
 
   //The width and height of the image
   int width = img->width;
@@ -591,7 +589,6 @@ Image ImageMirror(Image img) { ///
 Image ImageCrop(Image img, int x, int y, int w, int h) { ///
   assert (img != NULL);
   assert (ImageValidRect(img, x, y, w, h));
-  // Insert your code here!
 
   //Create a new image with the width and height of the rectangle
   Image newImage = ImageCreate(w, h, img->maxval);
@@ -621,8 +618,6 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
   assert (img1 != NULL);
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
-  // Insert your code here!
-
   //Iterate through all the pixels of the image
   for(int i = 0; i < img2->height; ++i){
     for(int j = 0; j < img2->width; ++j){
@@ -646,7 +641,6 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
   assert (img1 != NULL);
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
-  // Insert your code here!
 
   //Iterate through all the pixels of the image
   for(int i = 0; i < img2->height; ++i){
@@ -679,7 +673,6 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
   assert (img1 != NULL);
   assert (img2 != NULL);
   assert (ImageValidPos(img1, x, y));
-  // Insert your code here!
 
   //Iterate through all the pixels of the image
   for(int i = 0; i < img2->height; ++i){
@@ -707,7 +700,6 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
 int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
   assert (img1 != NULL);
   assert (img2 != NULL);
-  // Insert your code here!
 
   //Iterate through all the pixels of the image
   for(int i = 0; i < img1->height; ++i){
@@ -735,41 +727,40 @@ void ImageBlur(Image img, int dx, int dy) {
     assert(img != NULL);
     assert(dx >= 0 && dy >= 0);
 
-    // Cria uma cópia da imagem original para não alterar os pixels enquanto calcula a média
-    Image copy = ImageCopy(img);
-    if (copy == NULL) {
-        // Erro ao criar a cópia
+    // Allocates a temporary buffer to store the new pixel values
+    uint8* temp = (uint8*)malloc(img->width * img->height * sizeof(uint8));
+    if (temp == NULL) {
+        // Error allocating memory
         return;
     }
 
-    // O valor máximo de cinza
-    uint8 maxval = img->maxval;
-
-    // Percorre cada pixel da imagem
-    for (int y = 0; y < img->height; ++y) {
-        for (int x = 0; x < img->width; ++x) {
-            int count = 0;
+    // Calculates the new pixel values
+    for (int y = 0; y < img->height; y++) {
+        for (int x = 0; x < img->width; x++) {
             int sum = 0;
+            int count = 0;
 
-            // Percorre a vizinhança do pixel
-            for (int ny = -dy; ny <= dy; ++ny) {
-                for (int nx = -dx; nx <= dx; ++nx) {
-                    int currentX = x + nx;
-                    int currentY = y + ny;
-
-                    // Verifica se está dentro dos limites da imagem
-                    if (currentX >= 0 && currentX < img->width && currentY >= 0 && currentY < img->height) {
-                        sum += ImageGetPixel(copy, currentX, currentY);
+            // Calculates the mean of the pixels in the rectangle
+            for (int ny = y - dy; ny <= y + dy; ny++) {
+                for (int nx = x - dx; nx <= x + dx; nx++) {
+                    if (nx >= 0 && nx < img->width && ny >= 0 && ny < img->height) {
+                        sum += ImageGetPixel(img, nx, ny);
                         count++;
                     }
                 }
             }
-            // Calcula a média e define o novo valor do pixel
-            uint8 newPixelValue = (uint8)(sum / count);
-            ImageSetPixel(img, x, y, newPixelValue);
+
+            // Stores the mean in the temporary buffer
+            temp[y * img->width + x] = sum / count;
         }
     }
-    // Libera a cópia da imagem
-    ImageDestroy(&copy);
+
+    // Copies the new pixel values to the image
+    for (int i = 0; i < img->width * img->height; i++) {
+        img->pixel[i] = temp[i];
+    }
+
+    // Frees the temporary buffer
+    free(temp);
 }
 
