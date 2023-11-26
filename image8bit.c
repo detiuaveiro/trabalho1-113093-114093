@@ -640,26 +640,25 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) {
   assert(alpha >= 0.0 && alpha <= 1.0);
   assert(ImageValidRect(img1, x, y, img2->width, img2->height));
 
-  uint8 maxval = img1->maxval; // The max value of the gray level of the image
-
-  //Iterate through all the pixels of the image
+  // Iterate through all the pixels of img2
   for(int i = 0; i < img2->height; ++i) {
     for(int j = 0; j < img2->width; ++j) {
       uint8 pixelValue1 = ImageGetPixel(img2, j, i);
       uint8 pixelValue2 = ImageGetPixel(img1, x + j, y + i);
 
-      // First, do the multiplication in a type that can hold the precision
-      double newPixelValue = pixelValue1 * alpha + pixelValue2 * (1 - alpha);
+      // Perform blending calculation using double for precision
+      double blendedPixelValue = pixelValue1 * alpha + pixelValue2 * (1 - alpha);
 
-      // Converts back to uint8, applying saturation
-      newPixelValue = (newPixelValue > maxval) ? maxval : newPixelValue;
-      uint8 finalPixelValue = (uint8)(newPixelValue + 0.5); // +0.5 for rounding
+      // Convert the blended value back to uint8, applying saturation if necessary
+      blendedPixelValue = (blendedPixelValue > 255) ? 255 : blendedPixelValue;
+      uint8 finalPixelValue = (uint8)(blendedPixelValue); // +0.5 for rounding
 
-      //Set the pixel at position (x+j, y+i) to the new level
+      // Set the pixel at position (x+j, y+i) to the new level
       ImageSetPixel(img1, x + j, y + i, finalPixelValue);
     }
   }
 }
+
 
 
 /// Compare an image to a subimage of a larger image.
@@ -746,8 +745,8 @@ void ImageBlur(Image img, int dx, int dy) {
                 }
             }
 
-            // Stores the mean in the temporary buffer
-            temp[y * img->width + x] = (uint8)((double)sum / count);
+            // Check if count is zero to avoid division by zero
+            temp[y * img->width + x] = (count == 0) ? 0 : (uint8)((double)sum / count);
         }
     }
 
@@ -759,4 +758,5 @@ void ImageBlur(Image img, int dx, int dy) {
     // Frees the temporary buffer
     free(temp);
 }
+
 
